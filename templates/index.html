@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Assistant</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 600px;
+            margin: 50px auto;
+            background: #f0f0f0;
+        }
+        .chat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .messages {
+            height: 400px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background: #007bff;
+            color: white;
+            text-align: right;
+        }
+        .ai-message {
+            background: #e9ecef;
+            color: black;
+        }
+        input {
+            width: 85%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            width: 14%;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-box">
+        <h1>AI Assistant</h1>
+        <div class="messages" id="messages"></div>
+        <input type="text" id="userInput" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value;
+            
+            if (!message) return;
+            
+            document.getElementById('messages').innerHTML += 
+                `<div class="message user-message">You: ${message}</div>`;
+            
+            input.value = '';
+            
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            });
+            
+            const data = await response.json();
+            
+            document.getElementById('messages').innerHTML += 
+                `<div class="message ai-message">AI: ${data.response}</div>`;
+            
+            document.getElementById('messages').scrollTop = 
+                document.getElementById('messages').scrollHeight;
+        }
+    </script>
+</body>
+</html>
